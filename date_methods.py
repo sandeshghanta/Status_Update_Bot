@@ -1,4 +1,5 @@
 import datetime
+import json
 
 def clean_arg_for_date(x):
     x = str(x)
@@ -42,7 +43,7 @@ def is_valid_date(date):
         if ((ord(i) >= 48 and ord(i) <= 57) or ord(i) == 45):
             continue
         else:
-            errormsg = data + " is not a valid date. " + i + " is an invalid character"
+            errormsg = date + " is not a valid date. " + i + " is an invalid character"
             return (False,errormsg)
 
     args = list(date.split('-'))
@@ -51,6 +52,7 @@ def is_valid_date(date):
     if (len(args) != 3):    #If there are any more or less than 3 args then it means the date is wrong
         errormsg = "A date must have exactly 3 arguments " + date + " does not have 3 arguments"
         return (False,errormsg)
+
     for i in range(0,3):
         if (len(args[i]) > 2):
             errormsg = date + " is not a valid date. "+ args[i] + " is not valid"
@@ -61,11 +63,20 @@ def is_valid_date(date):
         errormsg = args[1] + " is not a valid month"
         return (False,errormsg)
 
+    year = int("20"+args[2])    #Checking if the year is leap year. If the year is leap year then we need to add one more day to february
+    if (( year%400 == 0)or (( year%4 == 0 ) and ( year%100 != 0))):
+        days_in_month[2] = days_in_month[2] + 1
+
     if (int(args[0]) > days_in_month[int(args[1])] or int(args[0]) <= 0):    #Checking if those many days are there in the month
         errormsg = args[0] + " days do not exist in the month " + args[1]
         return (False,errormsg)
-    if (int(args[1]) < 7 or int(args[2]) < 18):
-        errormsg = "Our analysis starts from 01/07/18. " + date + " is older than that!!"
+
+    with open("values.json","r") as file:
+        values = json.load(file)
+
+    start_date = list(map(int,values["analysis_start_date"].split('-')))
+    if (int(args[1]) < start_date[1] or int(args[2]) < start_date[2]):  #Checking if the date provided is older than the start_date which is 01-07-18
+        errormsg = "Our analysis starts from 01-07-18. " + date + " is older than that!!"
         return (False,errormsg)
     return (True,'-'.join(args))
 

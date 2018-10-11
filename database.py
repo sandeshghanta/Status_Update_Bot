@@ -1,10 +1,16 @@
 from bot import send_error_message
 import MySQLdb
+import json
+
+values = {}
+with open("values.json","r") as file:
+    values = json.load(file)
+
 def connect():
-    conn=MySQLdb.connect(host='localhost',user='root',passwd='sandeshghanta047')
+    conn=MySQLdb.connect(host=values['database']['host'],user=values['database']['user'],passwd=values['database']['passwd'])
     #conn=MySQLdb.connect(host='sandeshghanta.mysql.pythonanywhere-services.com',user='sandeshghanta',passwd='onread1.com')
     cursor = conn.cursor()
-    cursor.execute('use sandeshghanta$userdata')
+    cursor.execute('use {0}'.format(values['database']['dbname']))
     return conn,cursor
 
 def isadmin(chatId):

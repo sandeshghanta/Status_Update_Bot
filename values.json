@@ -1,0 +1,11 @@
+{
+  "bot_token": "stop-looking-at-private-stuff",
+  "database":{
+    "host":"I-AM-THE-GREATEST-HOST",
+    "user":"ALSO-THE-GREATEST-USER",
+    "passwd":"WITH-THE-MOST-SECURE-PASSWORD",
+    "dbname":"AND-A-RANDOM-DBNAME"
+  },
+  "analysis_start_date":"01-07-18",
+  "batches":["2015","2016","2017"]
+}
