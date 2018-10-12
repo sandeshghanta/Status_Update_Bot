@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, request, abort, Response, send_from_directory
-#import matplotlib.pyplot as plt
-#from matplotlib.ticker import MaxNLocator
+import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 import requests
 import json
 import MySQLdb
@@ -504,7 +504,7 @@ def draw_chart(chart_data,recieved_mails,expected_mails,pie):
 def list_statistics(chatId,message):
     batches = values['batches']
     summary_message = "Statistics of "
-    #os.chdir('/home/sandeshghanta/mysite/')
+    os.chdir('/home/sandeshghanta/mysite/')
     args = list(message.strip().split())
 
     try:
@@ -663,7 +663,7 @@ def list_statistics(chatId,message):
                     recieved_mails = recieved_mails + sent
                     expected_mails = expected_mails + total_no_of_students_in_batches
                     chart_data.append((file_name,sent,total_no_of_students_in_batches))
-        except:   #have to change it to except FileNotFoundError before deploying and then have to check it it works in server
+        except FileNotFoundError:
             #send_admin_message(file_name+'.txt' + " is not there in the server!!!")
             do_nothing = 1
         start_date = start_date + datetime.timedelta(days=1)
@@ -788,8 +788,7 @@ with open("values.json","r") as file:
 
 @app.route("/"+values['bot_token'], methods=['GET','POST'])
 def webhook():
-    #request_data = request.get_json()
-    request_data = {"update_id": 727334728, "message": {"date": 1537694939, "text": "/statistics -i sghanta05@gmail.com -d -pie", "entities": [{"offset": 0, "type": "bot_command", "length": 5}], "chat": {"first_name": "Sandesh", "type": "private", "last_name": "Ghanta", "id": 314219342, "username": "sandeshghanta"}, "message_id": 94, "from": {"is_bot": False, "username": "sandeshghanta", "language_code": "en-IN", "id": 314219342, "first_name": "Sandesh", "last_name": "Ghanta"}}}
+    request_data = request.get_json()
     chatId = ""
     if ('message' in request_data):
         try:
@@ -814,6 +813,5 @@ def get_file(path):
     return send_from_directory(UPLOAD_DIRECTORY, path, as_attachment=True)
 
 if __name__ == '__main__':
-    #os.chdir('/home/sandeshghanta/mysite/')
-    #app.run(host='0.0.0.0',port="1234")
-    webhook()
+    os.chdir('/home/sandeshghanta/mysite/')
+    app.run(host='0.0.0.0',port="1234")
