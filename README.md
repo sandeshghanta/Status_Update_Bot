@@ -11,10 +11,18 @@ These bot will help you to get the instant updates as well as search for the thr
 4. /list_following: Get the list of people's names you are following.
 5. /list_all_mails: Get the list of people's email id's you are following.
 6. /request_access: This command will request admin to grant their permission for receiving mail.
-7. /statistics: Get the statistics or indepth details of each mail id.
+7. /statistics: Get the statistics or indepth details of each mail id. There are three arguments that is needed:
+    -i : stands for individual user
+    -b : stands for batch
+    -a : stands for all users
+    -d : stands for day (format is dd-mm-yy). If none is given it takes yesterday's date by default.
+    -p : stands for time period. The first argument contains start date and second with end date. (format is dd-mm-yy)\
+    -h : stands for history.  
     ```
-    /statistics -i mailid1 (-i individual user)
-    /statistics -b 2016 (-b batch you want to track)
+    /statistics -i mailid1
+    /statistics -b 2016
+    /statistics -b 2016 -h
+    /statistics -b 2016 -p 02-07-18 15-07-18
     ```
 8. /help: This command will display list of slash commands with description.
 
