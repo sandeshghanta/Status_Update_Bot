@@ -7,11 +7,15 @@ A telegram bot which gets the status updates of the amfoss members and sends the
 1. Clone the repository
 2. Install Python 3.7 in your system. [link](https://www.python.org/downloads/)
 3. Install the python modules required the script to work.
-*requests [link](http://docs.python-requests.org/en/v2.7.0/user/install/)
-*matplotlib.pyplot [link](https://matplotlib.org/users/installing.html)
-*MySQLdb [link](https://geeksww.com/tutorials/web_development/python/installation/how_to_download_and_install_mysqldb_module_for_python_on_linux.php)
-*flask [link](http://flask.pocoo.org/docs/1.0/installation/#install-flask)
-*googleapiclient [link](https://developers.google.com/gmail/api/quickstart/python)
+* requests [link](http://docs.python-requests.org/en/v2.7.0/user/install/)
+
+* matplotlib.pyplot [link](https://matplotlib.org/users/installing.html)
+
+* MySQLdb [link](https://geeksww.com/tutorials/web_development/python/installation/how_to_download_and_install_mysqldb_module_for_python_on_linux.php)
+
+* flask [link](http://flask.pocoo.org/docs/1.0/installation/#install-flask)
+
+* googleapiclient [link](https://developers.google.com/gmail/api/quickstart/python)
 
 There are several other modules which this script uses like json, base64, os etc.. these modules are already installed so there is no need to do any kind of special installation
 
@@ -21,8 +25,7 @@ Will add them soon
 
 ### Break down into end to end tests
 
-Explain what these tests test and why
-
+Will add them soon
 ```
 Give an example
 ```
@@ -49,8 +52,6 @@ Will update this soon
 ## Authors
 
 * **Sandesh Ghanta** - *Initial work* - [sandeshghanta](https://github.com/sandeshghanta)
-
-[comment]: <> See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
 ## License
 
