@@ -3,7 +3,7 @@ import json
 
 
 values = {}
-with open("values.json","r") as file:
+with open("/home/sandeshghanta/mysite/values.json","r") as file:
     values = json.load(file)
 
 def send_message(chatId,message,disable_web_page_preview=False,send_formatted=True,bot_token=values['bot_token']):
@@ -31,7 +31,7 @@ def send_error_message(chatId):
 def send_message_to_all(message):
     from database import connect    #This import is placed here to avoid circular dependency
     conn,cursor = connect()
-    query = "select chatId from user"
+    query = "select chatId from accepted_users"
     cursor.execute(query)
     chatIds = cursor.fetchall()
     for chatId in chatIds:

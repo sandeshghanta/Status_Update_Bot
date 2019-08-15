@@ -33,6 +33,10 @@ def get_today_date():
     year = clean_arg_for_date(now.year)
     return day+'-'+month+'-'+year
 
+def get_year():
+    now = datetime.datetime.now()
+    return str(now.year)
+
 def is_valid_date(date):
     days_in_month = [-1,31,28,31,30,31,30,31,31,30,31,30,31]    #Not supposed to change in the near future!!
     date = str(date)
@@ -71,13 +75,17 @@ def is_valid_date(date):
         errormsg = args[0] + " days do not exist in the month " + args[1]
         return (False,errormsg)
 
-    with open("values.json","r") as file:
+    with open("/home/sandeshghanta/mysite/values.json","r") as file:
         values = json.load(file)
 
     start_date = list(map(int,values["analysis_start_date"].split('-')))
-    if (int(args[1]) < start_date[1] or int(args[2]) < start_date[2]):  #Checking if the date provided is older than the start_date which is 01-07-18
-        errormsg = "Our analysis starts from 01-07-18. " + date + " is older than that!!"
-        return (False,errormsg)
+    if (int(args[2]) <= start_date[2]):
+        if (int(args[2]) < start_date[2]):  #Checking if the date provided is older than the start_date which is 01-07-18
+            errormsg = "Our analysis starts from 01-07-18. " + date + " is older than that!!"
+            return (False,errormsg)
+        elif (int(args[1]) < start_date[1]):    #There is a reason for putting this seperately in elif
+            errormsg = "Our analysis starts from 01-07-18. " + date + " is older than that!!"
+            return (False,errormsg)
     return (True,'-'.join(args))
 
 def is_smaller_than_today(date):    #Method returns True if the date is smaller than today

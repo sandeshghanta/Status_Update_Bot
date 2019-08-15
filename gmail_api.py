@@ -1,22 +1,19 @@
 from googleapiclient.discovery import build
 from httplib2 import Http
 from oauth2client import file, client, tools
-
-import requests
-from date_methods import get_today_date, get_days_in_words
+import MySQLdb
+from date_methods import get_today_date, get_days_in_words, get_year
 from bot import send_message
 from database import connect
-import MySQLdb
-import datetime
 import json
 import base64
 
-with open("values.json","r") as file:
-    values = json.load(file)
+with open("/home/sandeshghanta/mysite/values.json","r") as f:
+    values = json.load(f)
 
 def cleanmail(data):
     days = get_days_in_words()
-    std_text = """You received this message because you are subscribed to the Google Groups "FOSS-2017" group."""
+    std_text = """You received this message because you are subscribed to the Google Groups "FOSS-2018" group."""
     for mail in data:
         index = data[mail].find("On " + days[0]+ ",")
         if (index != -1):
@@ -41,14 +38,27 @@ def cleanmail(data):
 
 def send_mails_to_users(data,date):
     data = cleanmail(data)
+    try:
+        conn,cursor = connect()
+        cursor.execute("select * from mails")
+        result = cursor.fetchall()
+        conn.close()
+    except (MySQLdb.Error, MySQLdb.Warning) as e:
+        conn.close()
+        return
+    all_mails = [x[0] for x in result]
     conn,cursor = connect()
     query = "select * from accepted_users"
     cursor.execute(query)
     accepted_users = cursor.fetchall()
+    conn.close()
+    to_remove = []
     for user in accepted_users:
+        conn,cursor = connect()
         query = "select following from user where chatId = '{0}'".format(user[0])
         cursor.execute(query)
         following = cursor.fetchall()[0][0]
+        conn.close()
         following = following.strip()
         if (following == ""):
             continue
@@ -58,10 +68,23 @@ def send_mails_to_users(data,date):
             if (usr in data):
                 message = "Status update of " + usr + " for the day " + date + '\n\n'
                 message = message + data[usr]
+                print (message)
             else:
-                message = usr + " Did not send a status update for the day " + date + '\n'
+                if (usr in all_mails):
+                    message = usr + " Did not send a status update for the day " + date + '\n'
+                else:
+                    to_remove.append(usr)
+                    message = usr + " No longer exists in the mails database, so the user has been removed from your following list"
             send_message(user[0],message,True)
-    conn.close()
+        if (len(to_remove) > 0):
+            print (to_remove)
+            for mail in to_remove:
+                following = list(filter((mail).__ne__, following))
+            conn,cursor = connect()
+            query = "update user set following = '" + ' '.join(following) + "' where chatId = " + user[0]
+            cursor.execute(query)
+            conn.commit()
+            conn.close()
 
 def list_messages_matching_query(service, user_id, query=''):
     response = service.users().messages().list(userId=user_id,q=query).execute()
@@ -102,18 +125,19 @@ def get_sender_email_id_and_maildata(service, user_id, msg_id):
     return (email_id,content)
 
 def getdata(date):
-    store = file.Storage('token.json')
+    store = file.Storage('/home/sandeshghanta/mysite/token.json')
     creds = store.get()
     if not creds or creds.invalid:
         flow = client.flow_from_clientsecrets('credentials.json', SCOPES)
         creds = tools.run_flow(flow, store)
     service = build('gmail', 'v1', http=creds.authorize(Http()))
 
-    threadName = '[foss-2017] Status Update [' + date + ']'
+    threadName = '[foss-2018] Status Update [' + date + ']'
     user_id = "me"
     messages = list_messages_matching_query(service, user_id='me', query=threadName)
     email_to_content = {}
     for message in messages:
+        print (message)
         email_id,content = get_sender_email_id_and_maildata(service, user_id="me", msg_id=message['id'])
         email_to_content[email_id] = content
     return email_to_content
@@ -124,7 +148,7 @@ def convert_to_json_and_store(mails_list,filename):
     data = {}   #Initializing data as an empty dictionary and then adding all the batches as keys
     for batch in values['batches']:
         data[batch] = []
-    fileobj = open('maildata.json','r')
+    fileobj = open('/home/sandeshghanta/mysite/maildata.json','r')
     mails_data = json.load(fileobj)
     fileobj.close()
     for mail in mails_list:
@@ -136,11 +160,15 @@ def convert_to_json_and_store(mails_list,filename):
                 break
         if (not in_batch):
             #ONLY the amritapurifoss mail is supposed to be printed. If any other mail is being printed then it means that the mail is not there in maildata.json and must be added!!
-            app.logger.info("The following mail was not there in the database " + mail)
-
-    if (len(data['2015']) == 0 and len(data['2016']) == 0 and len(data['2017']) == 0):
+            print("The following mail was not there in the database " + mail)
+    zero_mail = True
+    for batch in data:
+        if (len(data[batch]) != 0):
+            zero_mail = False
+            break
+    if (zero_mail):
         return
-    file = open("jsondata/"+filename+".txt",'w+')
+    file = open("/home/sandeshghanta/mysite/jsondata/"+filename+".txt",'w+')
     json.dump(data,file)
     file.close()
 
@@ -148,7 +176,7 @@ if __name__ == '__main__':
     date = get_today_date()
     #The returned date will be in the format dd-mm-yy
     #We need the format to be dd-mm-yyyy
-    date = date[:-2] + "2018"
+    date = date[:-2] + get_year()
     print ("Currently at " + date)
     email_to_content = getdata(date)
     if (email_to_content != {}):

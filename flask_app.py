@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, request, abort, Response, send_from_directory
+from flask import Flask, request, abort, Response, send_from_directory, render_template
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 import requests
@@ -192,7 +192,6 @@ def list_following(chatId):
 
 def revoke_access(chatId,usernames):
     usernames = list(set(usernames))
-    conn,cursor = connect()
     revoked_for = []
     for user in usernames:
         cId = ""
@@ -200,6 +199,7 @@ def revoke_access(chatId,usernames):
         requesting = False
         message = ""
         try:
+            conn,cursor = connect()
             query = "select chatId from accepted_users where tusername = '{0}'".format(user)
             result = cursor.execute(query)
             if (result > 0):
@@ -243,6 +243,7 @@ def revoke_access(chatId,usernames):
     send_message(chatId,message)
 
 def list_all_mails(chatId):
+    data = {}
     try:
         conn,cursor = connect()
         cursor.execute("select * from mails")
@@ -252,10 +253,16 @@ def list_all_mails(chatId):
         app.logger.info(e)
         conn.close()
         return
-    mails = [x[0] for x in result]
+    for batch in values['batches']:
+        data[batch] = []
+    for member in result:
+        if (member[1] in data):     #This ensures that only mails which are there in the values['batches'] gets displayed
+            data[member[1]].append(member[0])
     message = "The available mails are \n"
-    for mail in mails:
-        message = message + " ->" + mail + '\n'
+    for batch in data:
+        message = message + batch + '\n'
+        for mail in data[batch]:
+            message = message + " ->" + mail + '\n'
     send_message(chatId,message)
 
 def request_access(request_data):
@@ -413,7 +420,7 @@ def remove_mail(chatId,mails):
     for mail in mails:
         try:
             if (is_valid_mail(mail)):
-                query = "delete from mail where mail_id = '{0}';".format(mail)
+                query = "delete from mails where mail_id = '{0}';".format(mail)
                 cursor.execute(query)
                 conn.commit()
                 removed_mail.append(mail)
@@ -695,7 +702,7 @@ def send_help(request_data):
     chat_id = str(request_data['message']['chat']['id'])
     message = request_data['message']['text'].strip()
     args = message.split(' ')
-    file = open('help.json','r')
+    file = open('/home/sandeshghanta/mysite/help.json','r')
     help = json.load(file)
     file.close()
     if (len(args) == 1):
@@ -754,7 +761,7 @@ def handle_request(request_data):
         elif (message.startswith('/grant_access ')):
             usernames = list(message[14:].split(' '))
             grant_access(chatId,usernames)
-        elif (message.startswith('/revoke_access ')):       #If the user changes his telegram username also it is fine. We can kick him out using the old username.
+        elif (message.startswith('/revoke_access ')):
             usernames = list(message[15:].split(' '))
             revoke_access(chatId,usernames)
         elif (message.startswith('/add_mail ')):
@@ -783,7 +790,7 @@ def handle_request(request_data):
         send_message(chatId,message)
 
 values = {}     #Defining an dictionary containing all the confidential data in global scope to make sure all functions get access to it
-with open("values.json","r") as file:
+with open("/home/sandeshghanta/mysite/values.json","r") as file:
     values = json.load(file)
 
 @app.route("/"+values['bot_token'], methods=['GET','POST'])

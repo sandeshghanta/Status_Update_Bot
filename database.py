@@ -3,7 +3,7 @@ import MySQLdb
 import json
 
 values = {}
-with open("values.json","r") as file:
+with open("/home/sandeshghanta/mysite/values.json","r") as file:
     values = json.load(file)
 
 def connect():
