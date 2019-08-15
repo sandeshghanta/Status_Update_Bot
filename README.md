@@ -1,70 +1,74 @@
-# Status_Update_Bot
-A telegram bot for getting status updates.
+# Status Update Bot
 
-Hello, Welcome to the Status Update Bot!
-It is great to see you here.
-Everyday you wish to see the status updates of some people, let it be your mentee/mentor. But searching for that particular mail is difficult in the thread\n
-This bot helps you with that. All you have to do is to 'follow' whosever updates you want to get. This bot will send you their status updates to via Telegram chat!\n
-The methods which are accessable to you are
-1) /follow: Using this command you can follow others. You can give multiple email id's at once.(space seperated)
-    Ex: /follow mail1
-    Ex: /follow mail1 mail2
+A telegram bot which gets the status updates of the amfoss members and sends them to you personally via chat.
 
-2) /unfollow: Using this command, you can unfollow a person who you already follow. You can give multiple email id's at once. (space seperated).
-    Ex: /unfollow mail1
-    Ex: /unfollow mail1 mail2
+## Getting Started
 
-3) /unfollow_all: Using this command, you can unfollow all the people who you currently follow. This command requires no arguments.
-    Ex: /unfollow_all
+1. Clone the repository
+2. Install Python 3.7 in your system. [link](https://www.python.org/downloads/)
+3. Install the python modules required the script to work.
+* requests [link](http://docs.python-requests.org/en/v2.7.0/user/install/)
 
-4) /list_following: Lists all the people who you are currently following. This command takes no arguments.
-    Ex: /list_following
+* matplotlib.pyplot [link](https://matplotlib.org/users/installing.html)
 
-5) /list_all_mails: Lists all the mails in the FOSS'17 group. This command takes no arguments.
-    Ex: /list_all_mails
+* MySQLdb [link](https://geeksww.com/tutorials/web_development/python/installation/how_to_download_and_install_mysqldb_module_for_python_on_linux.php)
 
-6) /request_access: Requests the admin to grant you access to recieve mail. This command takes no arguments
-    Ex: /request_access
+* flask [link](http://flask.pocoo.org/docs/1.0/installation/#install-flask)
 
-7) /help: Displays this message
-    Ex: /help
-    
-8) /statistics: There are three arguements to this command. The first two arguments are MANDATORY for the query to execute
-        The first argument is to know whom to check for. The available options are -i, -b, -a.
-            • -i stands for individual user. After the -i flag you can give the email address of the person you want.
-                Ex: /statistics -i mail1
-            • -b stands for batch. After the -b flag you can mention the batch you want to track. The available options as of now are 2015,2016 and 2017
-                Ex: /statistics -b 2016
-            • -a stands for all users. All the people in the FOSS mailing list will be considered.
-                Ex: /statistics -a
-        The second argument is for time period. The available options are -d, -p, -h
-            • -d stands for a day. After the -d flag you can give a day in dd-mm-yy format. If no argument is given then by default yesterdays day is taken
-                Ex: /statistics [argument1] -d 02-07-18
-                    /statistics [argument1] -d
-                Examples of acceptable dates
-                    2-7-18
-                    02-7-18
-                    2-07-18
-                    02-07-18
-            • -p stands for period. You must specify two dates after this flag. The first date is the start_date and the second date is the end_date. The dates should be of dd/mm/yy format.
-                Ex: /statistics [argument1] -p 02-07-18 02-08-18
-            • -h stands for history. It means that you will get the analysis from the start of time (in our case 01-07-18) to yesterdays date. No input is needed after this flag
-                Ex: /statistics [argument1] -h
-        The third argument is for knowing the type of graph to display output. The availabe options are -pie, -line. This argument is OPTIONAL
-            For the -i flags the default value is -pie
-            For the -a, -h flags the default value is -line
-            But you override these default values by simply mentioning the flag you want
-            NOTE: If the -d flag is used the default value is -pie and it cannot be overriden because there is no point in viewing a line graph with one node :P
-            Ex: /statistics [argument1] [argument2] -pie
-                /statistics [argument1] [argument2] -line
+* googleapiclient [link](https://developers.google.com/gmail/api/quickstart/python)
 
-        Ex: /statistics -i mail1 -d
-            /statistics -b 2016 -p 02/07/18 15/7/18
-            /statistics -b 2016 -h
-            /statistics -a -h
-            (and many more combinations supported)",
+There are several other modules which this script uses like json, base64, os etc.. these modules are already installed so there is no need to do any kind of special installation
 
-*NOTE*: This is a public bot. To make sure that the wrong people do not get the status updates of the FOSS mailing list you are required to request access from the admin. All you have to do is send the /request_access command. Until the admin accepts your request, you will not be getting the status updates of others. But you can keep editing your preferences till then i.e you can add who to follow and not. Once the admin accepts your request, you will be getting a notification. Similary the admin can revoke your access at any point of time.
-You will be receiving the status updates of the previous day daily at 5:10 AM
-Please check if your mail is present in /list_all_mails
-If not, please do ping me at sghanta05@gmail.com or 8137069878.
+## Running the tests
+
+Will add them soon
+
+### Break down into end to end tests
+
+Will add them soon
+```
+Give an example
+```
+
+## Deployment
+
+To deploy this script online one must have access to a free hosting platform like pythonanywhere and also must be a member in a google groups where emails are sent regularly. The title of the email should satisfy the given requirements i.e "[FOSS-2017] Status Update-13/10/18". Since being a member of a google group where such kinds of mails are regularly sent is difficult, it is recommended to change the name of the mail to be searched by modifying the code in [this](https://github.com/sandeshghanta/Status_Update_Bot/blob/887457a7f61b1bbebbda7941006e2b56ae75f8dd/gmail_api.py#L112) file
+
+It is **NOT** necessary to create a webserver and telegram bot to fix most of the issues. You can just modify the code and send a PR. I will look into it and tell you the changes needed to be made.
+
+Anyone who wants to contribute can test their changes by 
+1. To test the bot you must create your own bot in [telegram](https://core.telegram.org/bots)
+2. To host the code you can use any free hosting server pythonanywhere is recommended
+3. You must set up a webhook liking the bot to the webserver [link](https://medium.com/@xabaras/setting-your-telegram-bot-webhook-the-easy-way-c7577b2d6f72)
+4. While hosting the code in the webserver make sure you change the values in the values.json [file](https://github.com/sandeshghanta/Status_Update_Bot/blob/master/values.json). You must give the details of your telegram bot.
+5. Also make sure you add the gmail api keys required by the gmail_api.py file to the server. To do this just generate your keys just follow [this](https://developers.google.com/gmail/api/quickstart/python) At the end of the process you will be getting two files credentials.json and token.json. Just upload those files to the server too.
+6. Use this [link](https://medium.com/@rudder_/launching-a-flask-app-from-scratch-on-pythonanywhere-fef871171e18) for reference while uploading to pythonanywhere
+7. The gmail_api.py script sends the daily notifications to users. This script is run everyday at 23:45 UTC via a cron job. In your server you can change the time according to your choice. Use this [link](https://help.pythonanywhere.com/pages/ScheduledTasks/) to know how to set up a cron job in pythonanywhere
+8. The following tables exist in the database
+    ![accepted_users](https://preview.ibb.co/fgsN70/accepted-users.png)
+    ![admin](https://preview.ibb.co/h7hN70/admin.png)
+    ![mails](https://preview.ibb.co/ndKfuf/mails.png)
+    ![pending-requests](https://preview.ibb.co/mPQLuf/pending-requests.png)
+    ![user](https://preview.ibb.co/mXDOEf/user.png)
+
+## Screenshots
+
+Will add them soon
+
+## Built With
+
+* [python](http://www.dropwizard.io/1.0.2/docs/) - Language used
+* [Bot API](https://core.telegram.org/bots/api) - Bot API
+* [Gmail API](https://developers.google.com/gmail/api/) - Gmail API
+
+## Authors
+
+* **Sandesh Ghanta** - *Initial work* - [sandeshghanta](https://github.com/sandeshghanta)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Acknowledgments
+
+* I would like to thank pythonanywhere for providing a free hosting platform and google, telegram for providing such wonderful api's
